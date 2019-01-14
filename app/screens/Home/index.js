@@ -33,23 +33,25 @@ export const Input = styled.input`
 `
 
 export default () => {
-  const [pair, setPair] = useState({})
+  const [localPair, setLocalPair] = useState({})
   function submitPair(key, shared_secret) {
     putCredentials(key, shared_secret)
   }
   function usePair(key, shared_secret) {
-    setPair({ key, shared_secret })
+    setLocalPair({ key, shared_secret })
   }
   return (
     <HomeRoot>
       <Title>encrypted messaging wooo!</Title>
-      <SubTitle>active key: {pair.key || 'none'}</SubTitle>
-      <SubTitle>active secret: {pair.shared_secret || 'none'}</SubTitle>
-      {pair.key && pair.shared_secret && (
-        <Button color={theme.color.purple} onClick={() => setPair({})}>clear keys</Button>
+      <SubTitle>active key: {localPair.key || 'none'}</SubTitle>
+      <SubTitle>active secret: {localPair.shared_secret || 'none'}</SubTitle>
+      {localPair.key && localPair.shared_secret && (
+        <Button color={theme.color.purple} onClick={() => setLocalPair({})}>
+          clear keys
+        </Button>
       )}
       <br />
-      {!pair.key || !pair.shared_secret ? (
+      {!localPair.key || !localPair.shared_secret ? (
         <SetKey submitPair={submitPair} usePair={usePair} />
       ) : (
         <>
