@@ -1,27 +1,14 @@
-// export const post = (url, data) => fetch(url, {
-//   method: 'POST',
-//   headers: new Headers({
-//     'Accept': 'application/json',
-//     'Content-Type': 'application/json',
-//     'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-//   }),
-//   body: JSON.stringify(data)
-// })
+import HMACsha256 from 'crypto-js/hmac-sha256'
+import Hex from 'crypto-js/enc-hex'
 
-// export const get = url => fetch(url, {
-//   method: 'GET',
-//   headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('jwt')}`}),
-// })
-
-export const sign = () => {
-  return ''
+const headers = (user_key, route, shared_secret, ...params) => {
+  const message = '' // todo
+  return {
+    'X-Key': user_key,
+    'X-Route': route,
+    'X-Signature': HMACsha256(message, shared_secret).toString(Hex),
+  }
 }
-
-const headers = (user_key, route, signature) => ({
-  'X-Key': user_key,
-  'X-Route': route,
-  'X-Signature': signature,
-})
 
 export const putCredentials = (key, shared_secret) =>
   fetch('/credential', {
