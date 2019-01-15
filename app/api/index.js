@@ -34,7 +34,10 @@ export const putCredentials = (key, shared_secret) => {
   const params = {}
   return fetch('/credential', {
     method: 'PUT',
-    headers: headers(key, '/credentials', shared_secret, body, params),
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers(key, '/credentials', shared_secret, body, params),
+    },
     body: JSON.stringify(body),
   })
 }
@@ -44,7 +47,10 @@ export const postMessage = (key, shared_secret, msg, tags) => {
   const params = {}
   return fetch('/message', {
     method: 'POST',
-    headers: headers(key, '/message', shared_secret, body, params),
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers(key, '/message', shared_secret, body, params),
+    },
     body: JSON.stringify(body),
   })
 }
@@ -61,7 +67,7 @@ export const getMessageById = (key, shared_secret, id) => {
 export const getMessageByTag = (key, shared_secret, tag) => {
   const body = {}
   const params = { tag }
-  return fetch(`/message/${tag}`, {
+  return fetch(`/messages/${tag}`, {
     method: 'GET',
     headers: headers(key, `/message/${tag}`, shared_secret, body, params),
   })

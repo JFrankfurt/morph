@@ -1,11 +1,13 @@
-const { createHmac, timingSafeEqual } = require('crypto')
+const HMACsha256 = require('crypto-js/hmac-sha256')
+const Hex = require('crypto-js/enc-hex')
+const { timingSafeEqual } = require('crypto')
 const storage = require('../storage/index')
 
 module.exports = function isAuthenticated(req, res, next) {
   const xkey = req.header('X-Key') // key
   const xroute = req.header('X-Route') // route of request
   const xsignature = req.header('X-Signature') // HMAC-SHA256 sig
-  const auth = storage.key[xkey]
+  const auth = storage.getKeyPair(xkey)
   if (!auth) {
     res.status(403).send()
   }
@@ -32,15 +34,14 @@ module.exports = function isAuthenticated(req, res, next) {
     ''
   )
 
-  const hmac = createHmac('sha256', shared_secret)
-  hmac.update(preImage, 'utf8')
-  const recovered = hmac.digest()
-  const sigBuffer = Buffer.from(xsignature, 'utf8');
+  const recovered = HMACsha256(preImage, shared_secret).toString(Hex)
+  const recoveredBuffer = Buffer.from(recovered, 'utf8')
+  const providedBuffer = Buffer.from(xsignature, 'utf8')
+  const authenticated = timingSafeEqual(recoveredBuffer, providedBuffer)
 
-  // does the signature provided match the one we derived?
-  const authenticated = timingSafeEqual(recovered, sigBuffer)
   if (authenticated) {
     return next()
+  } else {
+    res.status(403).send()
   }
-  res.status(403).send()
 }

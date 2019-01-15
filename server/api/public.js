@@ -1,12 +1,13 @@
 const { Router } = require('express')
 const storage = require('../storage/index')
 
-module.exports = Router().put('/message', (req, res) => {
+module.exports = Router().put('/credential', (req, res) => {
   const { key, shared_secret } = req.body
-  if (storage.key[key]) {
+  console.log(req.body, JSON.stringify(storage))
+  if (storage.getKeyPair(key)) {
     res.status(403).send()
   } else {
-    storage.key[key] = { key, shared_secret }
+    storage.newKeyPair(key, shared_secret)
     res.status(204).send()
   }
 })

@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import { Button, SubTitle, Title } from '../../components/common'
 import { theme } from '../../styles/theme'
 import SetKey from '../../components/Home/SetKey'
-import SetMessage from '../../components/Home/GetMessage'
-import GetMessage from '../../components/Home/SetMessage'
+import GetMessage from '../../components/Home/GetMessage'
+import SetMessage from '../../components/Home/SetMessage'
 import { putCredentials } from '../../api'
+import Messages from '../../components/Home/Messages'
 
 const HomeRoot = styled.div`
   align-items: center;
@@ -30,23 +31,35 @@ export const Input = styled.input`
   &:focus {
     outline: 1px solid ${theme.color.purple};
   }
+  :autofill {
+    color: red;
+  }
 `
 
 export default () => {
   const [localPair, setLocalPair] = useState({})
+  const [messages, setMessages] = useState([])
   function submitPair(key, shared_secret) {
     putCredentials(key, shared_secret)
+    setLocalPair({ key, shared_secret })
   }
   function usePair(key, shared_secret) {
     setLocalPair({ key, shared_secret })
   }
+  function displayMessages(messages) { // an array of messages
+    setMessages(messages)
+  }
+
   return (
     <HomeRoot>
       <Title>encrypted messaging wooo!</Title>
       <SubTitle>active key: {localPair.key || 'none'}</SubTitle>
       <SubTitle>active secret: {localPair.shared_secret || 'none'}</SubTitle>
       {localPair.key && localPair.shared_secret && (
-        <Button color={theme.color.purple} onClick={() => setLocalPair({})}>
+        <Button color={theme.color.purple} onClick={() => {
+          setLocalPair({})
+          setMessages([])
+        }}>
           clear keys
         </Button>
       )}
@@ -55,10 +68,11 @@ export default () => {
         <SetKey submitPair={submitPair} usePair={usePair} />
       ) : (
         <>
-          <SetMessage />
-          <GetMessage />
+          <SetMessage localPair={localPair} />
+          <GetMessage localPair={localPair} displayMessages={displayMessages} />
         </>
       )}
+      {messages.length > 0 && <Messages messages={messages}/>}
     </HomeRoot>
   )
 }

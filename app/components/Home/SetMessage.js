@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Button, SubTitle } from '../common'
 import { Input, InputArea } from '../../screens/Home'
+import { postMessage } from '../../api'
 
-export default () => {
+export default ({ localPair }) => {
   const [message, setMessage] = useState('')
   const [tags, setTags] = useState('')
   const handleChange = ({ target: { name, value } }) => {
@@ -17,11 +18,10 @@ export default () => {
         console.warn('failed message set')
     }
   }
-
-  const sendMessage = () => {
-
+  function sendMessage() {
+    const { key, shared_secret } = localPair
+    postMessage(key, shared_secret, message, tags).then(console.log)
   }
-
   return (
     <InputArea>
       <SubTitle>Set your message</SubTitle>
