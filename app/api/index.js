@@ -31,13 +31,9 @@ const headers = (user_key, route, shared_secret, body = {}, params = {}) => {
 
 export const putCredentials = (key, shared_secret) => {
   const body = { key, shared_secret }
-  const params = {}
   return fetch('/credential', {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers(key, '/credentials', shared_secret, body, params),
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
 }

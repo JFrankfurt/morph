@@ -17,7 +17,7 @@ module.exports = Router()
     if (message) {
       res.status(200).send(message)
     } else {
-      res.status(400).send()
+      res.status(404).send()
     }
   })
   .get('/messages/:tag', isAuthenticated, (req, res) => {
